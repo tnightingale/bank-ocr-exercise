@@ -3,13 +3,6 @@ import { parseNextAccount } from "./ocr";
 import { print, printLine } from "./debug";
 import { printAccountNumber } from "./printer";
 
-// outputStr(printAll(NUMBERS));
-// outputStr(
-//     NUMBERS.slice(1, 10)
-//         .map(printSingle)
-//         .join("")
-// );
-
 const file = createLineReader(input1);
 let result = parseNextAccount(file);
 while (result !== undefined) {
