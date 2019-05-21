@@ -1,3 +1,4 @@
+import { readLine } from "./input";
 import {
     ENTRY_LENGTH,
     LINE_LENGTH,
@@ -5,7 +6,7 @@ import {
     DIGIT_WIDTH,
     lookupDigit
 } from "./numbers";
-import { readLine } from "./input";
+import { checkAlternatives, validateChecksum, isLegible } from "./qa";
 
 const BLANK_GLYPH = " ";
 
@@ -29,18 +30,11 @@ export function parseEntry(entryLines) {
     const legible = isLegible(accountNumber);
     const valid = validateChecksum(accountNumber);
 
-export function isLegible(accountNumber) {
-    return accountNumber.find(char => char === UNKNOWN_DIGIT) === undefined;
-}
-
-export function validateChecksum(accountNumber) {
-    let sum = 0;
-    for (let i = 0; i < accountNumber.length; i++) {
-        let d = accountNumber.length - i;
-        let p = accountNumber[i];
-        sum += p * d;
+    if (legible === false || valid === false) {
+        // checkAlternatives(digits);
     }
-    return sum % 11 === 0;
+
+    return [accountNumber, legible, valid];
 }
 
 function digitsToAccountNumber(digits) {

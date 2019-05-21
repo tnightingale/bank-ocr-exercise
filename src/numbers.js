@@ -22,7 +22,6 @@ export const DIGITS = [
     [9, [0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0]]
 ];
 
-export const BLANK_DIGIT = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 const NUMBER_LOOKUP = createNumberLookup();
 
 const DIGITS_LOOKUP = createDigitLookup();

@@ -1,13 +1,14 @@
 import { debug } from "./debug";
 import { DIGIT_HEIGHT, UNKNOWN_DIGIT, lookupNumber } from "./numbers";
 
+const BLANK_DIGIT = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 const BLANK_GLYPH = " ";
 const ERR = "X";
 const GLYPH_PALETTE = [
     ...[ERR, "_", ERR],
     ...["|", "_", "|"],
     ...["|", "_", "|"],
-    ...[ERR, " ", ERR]
+    ...[ERR, ERR, ERR]
 ];
 
 export function renderEntryForAccountNumber(accountNumber) {
