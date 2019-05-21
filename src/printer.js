@@ -1,7 +1,7 @@
 import { debug } from "./debug";
 import { DIGIT_HEIGHT, UNKNOWN_DIGIT, lookupNumber } from "./numbers";
 
-const BLANK_DIGIT = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+const BLANK_DIGIT = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0];
 const BLANK_GLYPH = " ";
 const ERR = "X";
 const GLYPH_PALETTE = [
