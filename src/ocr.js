@@ -3,23 +3,26 @@ import {
     LINE_LENGTH,
     DIGIT_HEIGHT,
     DIGIT_WIDTH,
-    lookupDigit
+    lookupDigit,
+    UNKNOWN_DIGIT
 } from "./numbers";
 import { readLine } from "./input";
 
+const BLANK_GLYPH = " ";
+
 export function parseNextAccount(file) {
-    let [entry, complete] = readEntryFromFile(file);
+    let [entryLines, complete] = readEntryFromFile(file);
     if (complete) {
         return;
     }
-    const entryResult = parseEntry(entry);
+    const entryResult = parseEntry(entryLines);
     return entryResult;
 }
 
-export function parseEntry(entry) {
+export function parseEntry(entryLines) {
     let accountNumber = [];
     for (let i = 0; i < ENTRY_LENGTH; i++) {
-        let digit = readDigit(entry, i);
+        let digit = readDigit(entryLines, i);
         let number = lookupDigit(digit);
         accountNumber.push(number);
     }
@@ -29,7 +32,7 @@ export function parseEntry(entry) {
 }
 
 export function isLegible(accountNumber) {
-    return accountNumber.find(char => char === "?") === undefined;
+    return accountNumber.find(char => char === UNKNOWN_DIGIT) === undefined;
 }
 
 export function validateChecksum(accountNumber) {
@@ -42,19 +45,19 @@ export function validateChecksum(accountNumber) {
     return sum % 11 === 0;
 }
 
-function readDigit(line, position) {
+function readDigit(entryLines, position) {
     let digit = [];
-    for (let rowOffset = 0; rowOffset < line.length; rowOffset += LINE_LENGTH) {
-        let positionOffset = rowOffset + position * DIGIT_WIDTH;
-        let sliceLength = positionOffset + DIGIT_WIDTH;
-        let row = line.slice(positionOffset, sliceLength);
-        digit.push(...parseRow(row));
+    for (let lineNumber = 0; lineNumber < entryLines.length; lineNumber++) {
+        let line = entryLines[lineNumber];
+        let lineOffset = position * DIGIT_WIDTH;
+        let row = line.slice(lineOffset, lineOffset + DIGIT_WIDTH);
+        digit.push(...parseRowGlyphs(row));
     }
     return digit;
 }
 
-function parseRow(row) {
-    return map(row, char => (char === " " ? 0 : 1));
+function parseRowGlyphs(row) {
+    return map(row, char => (char === BLANK_GLYPH ? 0 : 1));
 }
 
 function map(iterable, mapFn) {
@@ -62,7 +65,7 @@ function map(iterable, mapFn) {
 }
 
 function readEntryFromFile(file) {
-    let entry = "";
+    let entry = [];
     for (let i = 0; i < DIGIT_HEIGHT; i++) {
         let line = readLine(file);
         if (i === 0 && line === undefined) {
@@ -71,7 +74,7 @@ function readEntryFromFile(file) {
 
         assertValidLine(line);
 
-        entry += line;
+        entry.push(line);
     }
     return [entry, false];
 }

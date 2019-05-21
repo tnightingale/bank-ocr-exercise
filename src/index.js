@@ -1,34 +1,19 @@
 import { createLineReader, input1 } from "./input";
 import { parseNextAccount } from "./ocr";
 import { print, printLine } from "./debug";
-import { printAccountNumber } from "./printer";
+import { renderEntryForAccountNumber, renderOCRResult } from "./printer";
 
-const file = createLineReader(input1);
-let result = parseNextAccount(file);
-while (result !== undefined) {
-    printLine("---------------------------");
-    print(printAccountNumber(result[0].join("")));
+generateReport(createLineReader(input1));
 
-    let output = getAccountResultOutput(result);
-    printLine(output);
-    console.log(output);
-
-    result = parseNextAccount(file);
-}
-
-function getAccountResultOutput(result) {
-    const [numbers, legible, valid] = result;
-    const account = numbers.join("");
-
-    let message;
-    if (!legible) {
-        message = "ILL";
-    } else if (!valid) {
-        message = "ERR";
-    }
-    if (message) {
-        return `${account} ${message}`;
-    } else {
-        return `${account}`;
+function generateReport(file) {
+    let result = parseNextAccount(file);
+    while (result !== undefined) {
+        let [accountNumber] = result;
+        let output = renderOCRResult(result);
+        printLine("---------------------------");
+        print(renderEntryForAccountNumber(accountNumber.join("")));
+        printLine(output);
+        console.log(output);
+        result = parseNextAccount(file);
     }
 }

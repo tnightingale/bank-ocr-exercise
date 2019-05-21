@@ -1,73 +1,89 @@
 import { debug } from "./debug";
-import { DIGIT_HEIGHT, NUMBERS, BLANK as BLANK_DIGIT } from "./numbers";
+import { DIGIT_HEIGHT, DIGITS, BLANK_DIGIT, UNKNOWN_DIGIT } from "./numbers";
 
-const PRINT_BLANK = " ";
+const BLANK_GLYPH = " ";
 const ERR = "X";
-const PRINT_PALETTE = [
+const GLYPH_PALETTE = [
     ...[ERR, "_", ERR],
     ...["|", "_", "|"],
     ...["|", "_", "|"],
     ...[ERR, " ", ERR]
 ];
 
-export function printAccountNumber(accountNumber) {
-    const accountNumberStr = new String(accountNumber);
+export function renderEntryForAccountNumber(accountNumber) {
+    const accountNumberStr = accountNumber.toString();
     const digits = [];
     for (let char of Array.from(accountNumberStr)) {
         let digit;
-        if (char === "?") {
+        if (char === UNKNOWN_DIGIT) {
             digit = BLANK_DIGIT;
         } else {
             const number = parseInt(char, 10);
-            digit = NUMBERS[number];
+            digit = DIGITS[number];
         }
         digits.push(digit);
     }
-    return printAll(digits);
+    return renderEntryFromDigits(digits);
 }
 
-export function printAll(numArrs) {
+export function renderEntryFromDigits(digits) {
     let out = "";
-    out += printRowMulti(numArrs, 0) + "\n";
-    out += printRowMulti(numArrs, 1) + "\n";
-    out += printRowMulti(numArrs, 2) + "\n";
-    out += printRowMulti(numArrs, 3) + "\n";
+    out += renderLineForMultiple(digits, 0) + "\n";
+    out += renderLineForMultiple(digits, 1) + "\n";
+    out += renderLineForMultiple(digits, 2) + "\n";
+    out += renderLineForMultiple(digits, 3) + "\n";
     return out;
 }
 
-function printRowMulti(numArrs, rowNum) {
-    debug("printRowMulti()");
-    debug(JSON.stringify(numArrs));
+export function renderSingleNumber(digit) {
     let out = "";
-    for (let i = 0; i < numArrs.length; i++) {
-        debug(`(rowNum: ${rowNum}) ${i}:`);
-        debug(JSON.stringify(numArrs[i]));
-        out += printRow(numArrs[i], rowNum);
+    out += renderLineForSingle(digit, 0) + "\n";
+    out += renderLineForSingle(digit, 1) + "\n";
+    out += renderLineForSingle(digit, 2) + "\n";
+    out += renderLineForSingle(digit, 3) + "\n";
+    return out;
+}
+
+export function renderOCRResult(result) {
+    const [numbers, legible, valid] = result;
+    const accountNumber = numbers.join("");
+    let message;
+    if (!legible) {
+        message = "ILL";
+    } else if (!valid) {
+        message = "ERR";
+    }
+    if (message) {
+        return `${accountNumber} ${message}`;
+    } else {
+        return `${accountNumber}`;
+    }
+}
+
+function renderLineForMultiple(digits, lineNumber) {
+    debug("renderDigitRowForMultiple()");
+    debug(JSON.stringify(digits));
+    let out = "";
+    for (let i = 0; i < digits.length; i++) {
+        debug(`(rowNum: ${lineNumber}) ${i}:`);
+        debug(JSON.stringify(digits[i]));
+        out += renderLineForSingle(digits[i], lineNumber);
     }
     return out;
 }
 
-function printRow(numArr, rowNum) {
-    const digitOffset = numArr.length / DIGIT_HEIGHT;
-    const rowOffset = digitOffset * rowNum;
-    const row = numArr.slice(rowOffset, rowOffset + digitOffset);
+function renderLineForSingle(digit, lineNumber) {
+    const digitOffset = digit.length / DIGIT_HEIGHT;
+    const rowOffset = digitOffset * lineNumber;
+    const row = digit.slice(rowOffset, rowOffset + digitOffset);
     let out = "";
     for (let i = 0; i < row.length; i++) {
-        out += getPrintChar(numArr, rowOffset + i);
+        out += getGlyph(digit, rowOffset + i);
     }
-    debug(`printRow() ${rowNum}:${rowOffset}: ${row} ${out}`);
+    debug(`printRow() ${lineNumber}:${rowOffset}: ${row} ${out}`);
     return out;
 }
 
-export function printSingle(numArr) {
-    let out = "";
-    out += printRow(numArr, 0) + "\n";
-    out += printRow(numArr, 1) + "\n";
-    out += printRow(numArr, 2) + "\n";
-    out += printRow(numArr, 3) + "\n";
-    return out;
-}
-
-function getPrintChar(numArr, offset) {
-    return numArr[offset] ? PRINT_PALETTE[offset] : PRINT_BLANK;
+function getGlyph(digit, glyphOffset) {
+    return digit[glyphOffset] ? GLYPH_PALETTE[glyphOffset] : BLANK_GLYPH;
 }

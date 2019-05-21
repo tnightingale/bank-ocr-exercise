@@ -1,21 +1,8 @@
+import { entries, accountNumbers } from "./test_data";
 import { validateChecksum, isLegible, parseEntry } from "../src/ocr";
 
 describe(`parseEntry()`, () => {
-    const legibleValidEntry =
-        "    _  _     _  _  _  _  _ " +
-        "  | _| _||_||_ |_   ||_||_|" +
-        "  ||_  _|  | _||_|  ||_| _|" +
-        "                           ";
-    const illegibleEntry =
-        "    _  _     _  _  _  _  _ " +
-        "  |  | _||_||_ |_   ||_||_|" +
-        "  ||_  _|  | _||_|  ||_| _|" +
-        "                           ";
-    const legibleInvalidEntry =
-        " _  _  _  _  _  _  _  _  _ " +
-        " _| _| _| _| _| _| _| _| _|" +
-        "|_ |_ |_ |_ |_ |_ |_ |_ |_ " +
-        "                           ";
+    const { legibleValidEntry, illegibleEntry, legibleInvalidEntry } = entries;
 
     it(`should return a successful result for a legible, valid entry`, () => {
         const result = parseEntry(legibleValidEntry);
@@ -43,23 +30,7 @@ describe(`parseEntry()`, () => {
 });
 
 describe(`validateChecksum()`, () => {
-    const invalidAccountNumbers = [
-        [6, 6, 4, 3, 7, 1, 4, 9, 5],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [2, 2, 2, 2, 2, 2, 2, 2, 2],
-        [3, 3, 3, 3, 3, 3, 3, 3, 3],
-        [4, 4, 4, 4, 4, 4, 4, 4, 4],
-        [5, 5, 5, 5, 5, 5, 5, 5, 5]
-    ];
-
-    const validAccountNumbers = [
-        [7, 1, 1, 1, 1, 1, 1, 1, 1],
-        [7, 7, 7, 7, 7, 7, 1, 7, 7],
-        [2, 0, 0, 8, 0, 0, 0, 0, 0],
-        [3, 3, 3, 3, 9, 3, 3, 3, 3],
-        [8, 8, 8, 8, 8, 6, 8, 8, 8],
-        [8, 8, 8, 8, 8, 8, 8, 8, 0]
-    ];
+    const { invalidAccountNumbers, validAccountNumbers } = accountNumbers;
 
     it(`should return false for invalid account numbers`, () => {
         for (let accountNumber of invalidAccountNumbers) {
@@ -77,23 +48,7 @@ describe(`validateChecksum()`, () => {
 });
 
 describe(`isLegible()`, () => {
-    const illegibleAccountNumbers = [
-        ["?", 6, 4, 3, 7, 1, 4, "?", 5],
-        [1, "?", 1, 1, 1, 1, 1, 1, "?"],
-        [2, 2, "?", 2, 2, 2, 2, 2, 2],
-        [3, 3, 3, "?", 3, 3, 3, 3, 3],
-        [4, 4, 4, 4, "?", 4, 4, 4, 4],
-        [5, 5, 5, 5, 5, "?", 5, 5, 5]
-    ];
-
-    const legibleAccountNumbers = [
-        [7, 1, 1, 1, 1, 1, 1, 1, 1],
-        [7, 7, 7, 7, 7, 7, 1, 7, 7],
-        [2, 0, 0, 8, 0, 0, 0, 0, 0],
-        [3, 3, 3, 3, 9, 3, 3, 3, 3],
-        [8, 8, 8, 8, 8, 6, 8, 8, 8],
-        [8, 8, 8, 8, 8, 8, 8, 8, 0]
-    ];
+    const { illegibleAccountNumbers, legibleAccountNumbers } = accountNumbers;
 
     it(`should return false for account numbers containing a '?'`, () => {
         for (let accountNumber of illegibleAccountNumbers) {
