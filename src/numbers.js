@@ -8,34 +8,46 @@ export const UNKNOWN_DIGIT = "?";
 // |·| ··| ·_| ·_| |_| |_· |_· ··| |_| |_|
 // |_| ··| |_· ·_| ··| ·_| |_| ··| |_| ·_|
 // ··· ··· ··· ··· ··· ··· ··· ··· ··· ···
+
 export const DIGITS = [
-    [0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0],
-    [0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0],
-    [0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0],
-    [0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0],
-    [0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0],
-    [0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0],
-    [0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0],
-    [0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0],
-    [0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-    [0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0]
+    // [0, [0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0]],
+    [1, [0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0]],
+    [2, [0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0]],
+    [3, [0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0]],
+    [4, [0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0]],
+    [5, [0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0]],
+    [6, [0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0]],
+    [7, [0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0]],
+    [8, [0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0]],
+    [9, [0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0]]
 ];
 
 export const BLANK_DIGIT = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+const NUMBER_LOOKUP = createNumberLookup();
+
+const DIGITS_LOOKUP = createDigitLookup();
+
+export function lookupNumber(number) {
+    return NUMBER_LOOKUP.get(number);
+}
 
 export function lookupDigit(digit) {
     const numStr = serializeDigit(digit);
     const number = DIGITS_LOOKUP.get(numStr);
-    if (number === 0 || number === undefined) {
+    if (number === undefined) {
         return UNKNOWN_DIGIT;
     }
     return number;
 }
 
-const DIGITS_LOOKUP = createDigitLookup(DIGITS);
+function createNumberLookup() {
+    return new Map(DIGITS);
+}
 
-function createDigitLookup(numbers) {
-    return new Map(numbers.map((arr, i) => [serializeDigit(arr), i]));
+function createDigitLookup() {
+    return new Map(
+        DIGITS.map(([number, digit]) => [serializeDigit(digit), number])
+    );
 }
 
 function serializeDigit(arr) {

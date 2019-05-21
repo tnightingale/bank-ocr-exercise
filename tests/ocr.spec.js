@@ -1,5 +1,6 @@
-import { entries, accountNumbers } from "./test_data";
-import { validateChecksum, isLegible, parseEntry } from "../src/ocr";
+import { entries } from "./test_data";
+import { UNKNOWN_DIGIT as _ } from "../src/numbers";
+import { parseEntry } from "../src/ocr";
 
 describe(`parseEntry()`, () => {
     const { legibleValidEntry, illegibleEntry, legibleInvalidEntry } = entries;
@@ -15,7 +16,7 @@ describe(`parseEntry()`, () => {
     it(`should return a illegible & invalid result for an illegible entry`, () => {
         const result = parseEntry(illegibleEntry);
         const [numbers, legible, valid] = result;
-        expect(numbers).toEqual([1, "?", 3, 4, 5, 6, 7, 8, 9]);
+        expect(numbers).toEqual([1, _, 3, 4, 5, 6, 7, 8, 9]);
         expect(legible).toBe(false);
         expect(valid).toBe(false);
     });

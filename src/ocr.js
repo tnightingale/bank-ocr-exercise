@@ -3,8 +3,7 @@ import {
     LINE_LENGTH,
     DIGIT_HEIGHT,
     DIGIT_WIDTH,
-    lookupDigit,
-    UNKNOWN_DIGIT
+    lookupDigit
 } from "./numbers";
 import { readLine } from "./input";
 
@@ -20,16 +19,15 @@ export function parseNextAccount(file) {
 }
 
 export function parseEntry(entryLines) {
-    let accountNumber = [];
+    let digits = [];
     for (let i = 0; i < ENTRY_LENGTH; i++) {
         let digit = readDigit(entryLines, i);
-        let number = lookupDigit(digit);
-        accountNumber.push(number);
+        digits.push(digit);
     }
+
+    const accountNumber = digitsToAccountNumber(digits);
     const legible = isLegible(accountNumber);
     const valid = validateChecksum(accountNumber);
-    return [accountNumber, legible, valid];
-}
 
 export function isLegible(accountNumber) {
     return accountNumber.find(char => char === UNKNOWN_DIGIT) === undefined;
@@ -43,6 +41,10 @@ export function validateChecksum(accountNumber) {
         sum += p * d;
     }
     return sum % 11 === 0;
+}
+
+function digitsToAccountNumber(digits) {
+    return digits.map(lookupDigit);
 }
 
 function readDigit(entryLines, position) {

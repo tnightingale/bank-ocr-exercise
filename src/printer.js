@@ -1,5 +1,5 @@
 import { debug } from "./debug";
-import { DIGIT_HEIGHT, DIGITS, BLANK_DIGIT, UNKNOWN_DIGIT } from "./numbers";
+import { DIGIT_HEIGHT, UNKNOWN_DIGIT, lookupNumber } from "./numbers";
 
 const BLANK_GLYPH = " ";
 const ERR = "X";
@@ -18,7 +18,7 @@ export function renderEntryForAccountNumber(accountNumber) {
             digit = BLANK_DIGIT;
         } else {
             const number = parseInt(char, 10);
-            digit = DIGITS[number];
+            digit = lookupNumber(number);
         }
         digits.push(digit);
     }
