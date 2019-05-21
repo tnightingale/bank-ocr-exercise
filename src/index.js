@@ -1,6 +1,6 @@
 import { createLineReader, input1 } from "./input";
 import { parseNextAccount } from "./ocr";
-import { print, printLine } from "./debug";
+import { print, printLine, debug } from "./debug";
 import { renderEntryForAccountNumber, renderOCRResult } from "./printer";
 
 generateReport(createLineReader(input1));
@@ -9,11 +9,11 @@ function generateReport(file) {
     let result = parseNextAccount(file);
     while (result !== undefined) {
         let [accountNumber] = result;
-        let output = renderOCRResult(result);
+        let resultOutput = renderOCRResult(result);
+        debug(resultOutput);
         printLine("---------------------------");
-        print(renderEntryForAccountNumber(accountNumber.join("")));
-        printLine(output);
-        console.log(output);
+        print(renderEntryForAccountNumber(accountNumber));
+        printLine(`=> ${resultOutput}`);
         result = parseNextAccount(file);
     }
 }

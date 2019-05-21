@@ -11,9 +11,8 @@ const GLYPH_PALETTE = [
 ];
 
 export function renderEntryForAccountNumber(accountNumber) {
-    const accountNumberStr = accountNumber.toString();
     const digits = [];
-    for (let char of Array.from(accountNumberStr)) {
+    for (let char of accountNumber) {
         let digit;
         if (char === UNKNOWN_DIGIT) {
             digit = BLANK_DIGIT;
@@ -45,8 +44,8 @@ export function renderSingleNumber(digit) {
 }
 
 export function renderOCRResult(result) {
-    const [numbers, legible, valid] = result;
-    const accountNumber = numbers.join("");
+    const [accountNumber, legible, valid] = result;
+    const accountNumberStr = accountNumber.join("");
     let message;
     if (!legible) {
         message = "ILL";
@@ -54,9 +53,9 @@ export function renderOCRResult(result) {
         message = "ERR";
     }
     if (message) {
-        return `${accountNumber} ${message}`;
+        return `${accountNumberStr} ${message}`;
     } else {
-        return `${accountNumber}`;
+        return `${accountNumberStr}`;
     }
 }
 
